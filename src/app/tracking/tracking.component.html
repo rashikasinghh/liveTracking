@@ -1,0 +1,64 @@
+<!-- Selecting delivery boy -->
+<div>
+  <form [formGroup]="locationForm" (ngSubmit)="onClick()">
+      <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">Options</label>
+          </div>
+          <select class="custom-select" formControlName="name">
+            <option selected>Choose...</option>
+            <option *ngFor="let user of allUsers">{{user}}</option>
+          </select>
+          <button class="btn btn-primary">Submit</button>
+      </div>
+  </form>
+</div>
+<div>
+  
+  <!-- To display google map  -->
+    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="10">
+      <!-- To display all latest loction of delivery boy -->
+      <ng-container *ngIf = "valid == false">
+          <agm-marker  (markerClick)=select_marker(infoWindow) *ngFor="let location of locations"
+                [latitude]="location.value.lat" 
+                [longitude]="location.value.lng"
+                [animation]="'DROP'">
+            <agm-info-window #infoWindow>
+              <strong>{{location.name}}</strong>
+            </agm-info-window>
+          </agm-marker>
+      </ng-container>
+
+      <!-- To display location travelled by a delivery boy -->
+      <ng-container *ngIf="valid == true">
+          <agm-marker [latitude]="start.lat" [longitude]="start.lng"></agm-marker>
+          <agm-marker [latitude]="end.lat" [longitude]="end.lng"></agm-marker>
+
+        <!-- <ng-container *ngFor="let location of locations, index as index">
+          <agm-marker *ngIf="index > 1 || index > locations.length" 
+            [latitude]="location.value.lat" 
+            [longitude]="location.value.lng">
+          </agm-marker>
+        </ng-container> -->
+          
+        <agm-polyline [strokeColor]="'red'" strokeWeight="2">
+            <ng-container *ngFor="let location of locations">
+              <agm-marker 
+              [latitude]="location.value.lat" 
+              [longitude]="location.value.lng" 
+              [animation]="'BOUNCE'"
+              [iconUrl]="{
+                url: './assets/vehicle.png',
+                scaledSize: {
+                    width: 50,
+                    height: 50
+                }
+            }"></agm-marker>
+              <agm-polyline-point [latitude]="location.value.lat" [longitude]="location.value.lng">
+              </agm-polyline-point>
+            </ng-container>
+        </agm-polyline>
+
+    </ng-container>
+  </agm-map>
+</div>
