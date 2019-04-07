@@ -30,12 +30,12 @@
       </ng-container>
 
       <!-- To display location travelled by a delivery boy -->
-      <ng-container *ngIf="valid == true">
+      <ng-container *ngIf="valid == true && delivery == true">
           <agm-marker [latitude]="start.lat" [longitude]="start.lng"></agm-marker>
           <agm-marker [latitude]="end.lat" [longitude]="end.lng"></agm-marker>
 
           <ng-container *ngFor="let location of sameLocation">
-            <agm-marker 
+            <agm-marker *ngIf="sameLocation.length > 0"
               [latitude]="location.lat" 
               [longitude]="location.lng"
               [animation]="'DROP'">

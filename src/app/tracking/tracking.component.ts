@@ -63,7 +63,8 @@ select_marker(infoWindow) {
             if (err.error instanceof Error) {
             this.snackbar.open('Client-side error', null, {duration: 2000});
             } else {
-            this.snackbar.open('User data not fetched', null, {duration: 2000});
+            const action = 'Turn on the Wi-fi';
+            this.snackbar.open('User data not fetched', action, {duration: 2000});
       }});
     this.service.latestLocation()
     .subscribe(response => {
@@ -81,7 +82,8 @@ select_marker(infoWindow) {
         if (err.error instanceof Error) {
           this.snackbar.open('Client-side error', null, {duration: 2000});
         } else {
-          this.snackbar.open('Unable to fetch user latest location', null, {duration: 2000});
+          const action = 'Turn on the Wi-fi';
+          this.snackbar.open('Unable to fetch user latest location', action, {duration: 2000});
         }
       });
   }
@@ -89,12 +91,13 @@ select_marker(infoWindow) {
   // To fetch locations travelled by delivery boy
   onClick() {
     this.locations = [];
+    this.delivery = false;
     this.valid = true;
     const user = this.locationForm.value;
     this.service.deliveryBoy(user.name)
     .subscribe(response => {
       const result = response;
-      const today = new Date('2019/04/06');
+      const today = new Date();
       const todayDate = this.datePipe.transform(today, 'yyyy/MM/dd');
       // tslint:disable-next-line:prefer-for-of
       for (let i = result.length - 1; i >= 0 ; i--) {
@@ -105,6 +108,7 @@ select_marker(infoWindow) {
             }
       }
       if (this.delivery === true) {
+        this.sameLocation = [];
         for (let j = 0; j < this.locations.length; j++) {
           if (j === 0) {
           this.startTime = this.locations[j].value.time;
@@ -126,14 +130,14 @@ select_marker(infoWindow) {
       this.end = this.locations[0].value;
     }
       if (this.delivery === false) {
-        const action = 'network';
-        this.snackbar.open('No location to track today!!!', action, {duration: 2000});
+        this.snackbar.open('No location to track today!!!', null, {duration: 2000});
       }
     }, err => {
       if (err.error instanceof Error) {
         this.snackbar.open('Client-side error', null, {duration: 2000});
       } else {
-        this.snackbar.open('Unable to fetch user latest location', null, {duration: 2000});
+        const action = 'Turn on the Wi-fi';
+        this.snackbar.open('Unable to fetch user latest location', action, {duration: 2000});
       }
     });
 }
