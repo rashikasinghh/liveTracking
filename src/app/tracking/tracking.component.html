@@ -34,12 +34,16 @@
           <agm-marker [latitude]="start.lat" [longitude]="start.lng"></agm-marker>
           <agm-marker [latitude]="end.lat" [longitude]="end.lng"></agm-marker>
 
-        <!-- <ng-container *ngFor="let location of locations, index as index">
-          <agm-marker *ngIf="index > 1 || index > locations.length" 
-            [latitude]="location.value.lat" 
-            [longitude]="location.value.lng">
-          </agm-marker>
-        </ng-container> -->
+          <ng-container *ngFor="let location of sameLocation">
+            <agm-marker 
+              [latitude]="location.lat" 
+              [longitude]="location.lng"
+              [animation]="'DROP'">
+              <agm-info-window [isOpen]='true'>
+                <strong>Stayed More than 10 minutes</strong>
+              </agm-info-window>
+            </agm-marker>
+          </ng-container>
           
         <agm-polyline [strokeColor]="'red'" strokeWeight="2">
             <ng-container *ngFor="let location of locations">
@@ -48,10 +52,10 @@
               [longitude]="location.value.lng" 
               [animation]="'BOUNCE'"
               [iconUrl]="{
-                url: './assets/vehicle.png',
+                url: './assets/path.png',
                 scaledSize: {
-                    width: 50,
-                    height: 50
+                    width: 10,
+                    height: 10
                 }
             }"></agm-marker>
               <agm-polyline-point [latitude]="location.value.lat" [longitude]="location.value.lng">

@@ -21,6 +21,10 @@ end = [];
 valid = false;
 delivery = false;
 
+startTime: number;
+endTime: number;
+sameLocation = [];
+
 locationForm = new FormGroup({
   name: new FormControl('')
 });
@@ -64,7 +68,6 @@ select_marker(infoWindow) {
     this.service.latestLocation()
     .subscribe(response => {
       const live = response.live_location;
-      console.log(live)
       live.forEach(us => {
         const a = {
           name: Object.keys(us)[0],
@@ -73,7 +76,6 @@ select_marker(infoWindow) {
       // tslint:disable-next-line:align
       this.locations.push(a);
     });
-    console.log(this.locations);
     },
       err => {
         if (err.error instanceof Error) {
@@ -95,15 +97,31 @@ select_marker(infoWindow) {
       const today = new Date('2019/04/06');
       const todayDate = this.datePipe.transform(today, 'yyyy/MM/dd');
       // tslint:disable-next-line:prefer-for-of
-      for (let i = 0; i < result.length; i++) {
+      for (let i = result.length - 1; i >= 0 ; i--) {
             const time1 = this.datePipe.transform(result[i].time, 'yyyy/MM/dd');
             if (todayDate === time1)  {
               this.delivery = true;
               this.locations.push({value: result[i]});
             }
       }
-      console.log(this.locations);
       if (this.delivery === true) {
+        for (let j = 0; j < this.locations.length; j++) {
+          if (j === 0) {
+          this.startTime = this.locations[j].value.time;
+          var startValue = this.locations[j].value;
+          } else {
+          this.endTime = this.locations[j].value.time;
+          const endValue = this.locations[j].value;
+          const timeDiff: number = Math.ceil((this.endTime - this.startTime) / 60000);
+          if ( timeDiff >= 10) {
+            if (startValue.lat === endValue.lat && startValue.lng === endValue.lng) {
+              this.sameLocation.push(endValue);
+            }
+          }
+          this.startTime = this.endTime;
+          startValue = endValue;
+        }
+        }
       this.start = this.locations[this.locations.length - 1].value;
       this.end = this.locations[0].value;
     }
